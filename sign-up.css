@@ -1,0 +1,89 @@
+body {
+	background-image: url("ky.jpg");
+	font-family: sans-serif;
+	color: white;
+}
+
+li {
+	display: inline;
+}
+
+li+li {
+	margin-left: 30px
+}
+
+.header {
+	background-color: #000066;
+	padding: 5px;
+	border: 2px solid;
+	border-radius: 10px;
+	display: inline-block;
+	width: 95%;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+	position: relative;
+	bottom: 15px;
+}
+
+a:hover {
+	background-color: #000099;
+	padding-top: 35px;
+	padding-bottom: 35px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#banner {
+	position: relative;
+	bottom: 0px;
+}
+
+#banner:hover {
+	background-color: #000066;
+	padding: 0px
+}
+
+.sign-up {
+padding: 10px;
+padding-left: 50px;
+background-color: rgba(0, 0, 26, 0.4);
+max-width: 450px;
+margin-left: 30px;
+margin-top: 20px;
+border: 2px solid;
+border-radius: 10px;
+width: 150%;
+}
+
+#submit {
+	margin-top: 20px;
+	border: none;
+	color: white;
+	background-color: rgba(0, 0, 102, 0.6);
+}
+
+.form-control {
+	border: 2px solid #000066;
+	border-radius: 5px;
+	height: 22px;
+	width: 300px;
+}
+
+h3 {
+	font-size: 1em
+}
+
+#login{
+	text-decoration: underline;
+	position: relative;
+	bottom: 0px;
+	background-color: none;
+}
+
+#login:hover {
+	padding: 0px;
+	background-color: none;
+}
