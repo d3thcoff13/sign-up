@@ -64,38 +64,64 @@
 	    	$servername = "sql.njit.edu";
 			$username = "th227";
 			$password = "lottie62";
+			$dbname = "th227";
 
-			$conn = new mysqli($servername, $username, $password);
-
-			if ($conn->connect_error) {
-		    	die("Connection failed: " . $conn->connect_error);
-			}
-			echo "Connected successfully";
-			$conn->close(); 
-	    }
+			try {
+			    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+			    // set the PDO error mode to exception
+			    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			    echo "Connected successfully"; 
+			    }
+			catch(PDOException $e)
+			    {
+			    echo "Connection failed: " . $e->getMessage();
+			    }
+			$conn = null;
+		}
 	    public function update($idNum) {
+
 	    	$servername = "sql.njit.edu";
 			$username = "th227";
 			$password = "lottie62";
+			$dbname = "th227";
 
-			$conn = new mysqli($servername, $username, $password);
+			try {
+			    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+			    // set the PDO error mode to exception
+			    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+			    $sql = "UPDATE accounts SET password= '".$this->password."' WHERE id= $idNum";
+
+			    // Prepare statement
+			    $stmt = $conn->prepare($sql);
+
+			    // execute the query
+			    $stmt->execute();
+
+			    // echo a message to say the UPDATE succeeded
+			    echo $stmt->rowCount() . " records UPDATED successfully";
+			    }
+			catch(PDOException $e)
+			    {
+			    echo $sql . "<br>" . $e->getMessage();
+			    }
+
+			$conn = null;
+		}
+	    	//$sql = "UPDATE accounts SET password= '".$this->password."' WHERE id= $idNum";
+	    public function delete($idNum) {
+	    	$servername = "sql.njit.edu";
+			$username = "th227";
+			$password = "lottie62";
+			$dbname = "th227";
+
+			// Create connection
+			$conn = new mysqli($servername, $username, $password, $dbname);
+			// Check connection
 			if ($conn->connect_error) {
 			    die("Connection failed: " . $conn->connect_error);
 			} 
 
-
-	    	$sql = "UPDATE accounts SET password= '".$this->password."' WHERE id= $idNum";
-
-	    	$conn->query($sql);
-
-			if ($conn->query($sql) === TRUE) {
-				echo "New record updated successfully";
-			} else {
-				echo "Error: " . $sql . "<br>" . $conn->error;
-			}
-	    }
-	    public function delete($idNum) {
 	    	$sql = "DELETE FROM th227.accounts WHERE id= '$idNum'";
 
 			if ($conn->query($sql) === TRUE) {
@@ -106,6 +132,18 @@
 			$conn->close();
 	    }
 	    public function insert() {
+	    	$servername = "sql.njit.edu";
+			$username = "th227";
+			$password = "lottie62";
+			$dbname = "th227";
+
+			// Create connection
+			$conn = new mysqli($servername, $username, $password, $dbname);
+			// Check connection
+			if ($conn->connect_error) {
+			    die("Connection failed: " . $conn->connect_error);
+			} 
+
 	    	$sql = "INSERT INTO accounts ('email', 'fname', 'lname', 'phone', 'birthday', 'gender', 'password') 
 			VALUES ( $this->email, $this->fname, $this->lname, $this->phone, $this->birth, $this->gender, $this->password)";
 
@@ -117,19 +155,49 @@
 			$conn->close();
 	    }
 	    public function display() {
-	    	$sql = "SELECT * FROM th227.users";
-			$result = $conn->query($sql);
+	    	echo "<table style='border: solid 1px black;'>";
+			echo "<tr><th>Id</th><th>Firstname</th><th>Lastname</th></tr>";
 
-			if ($result->num_rows > 0) {
-			    echo "<table><tr><th>ID</th><th>Name</th></tr>";
-			    while($row = $result->fetch_assoc()) {
-			        echo "<tr><td>".$row["id"]."</td><td>".$row["firstname"]." ".$row["lastname"]."</td></tr>";
+			class TableRows extends RecursiveIteratorIterator { 
+			    function __construct($it) { 
+			        parent::__construct($it, self::LEAVES_ONLY); 
 			    }
-			    echo "</table>";
-			} else {
-			    echo "0 results";
+
+			    function current() {
+			        return "<td style='width:150px;border:1px solid black;'>" . parent::current(). "</td>";
+			    }
+
+			    function beginChildren() { 
+			        echo "<tr>"; 
+			    } 
+
+			    function endChildren() { 
+			        echo "</tr>" . "<br>";
+			    } 
+			} 
+
+			$servername = "sql.njit.edu";
+			$username = "th227";
+			$password = "lottie62";
+			$dbname = "th227";
+
+			try {
+			    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+			    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			    $stmt = $conn->prepare("SELECT id, firstname, lastname FROM accounts"); 
+			    $stmt->execute();
+
+			    // set the resulting array to associative
+			    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC); 
+			    foreach(new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k=>$v) { 
+			        echo $v;
+			    }
 			}
-			$conn->close();
-	    }
+			catch(PDOException $e) {
+			    echo "Error: " . $e->getMessage();
+			}
+			$conn = null;
+			echo "</table>";
+		}
 	}
 ?>
